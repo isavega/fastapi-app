@@ -1,6 +1,6 @@
 # FastAPI Applicant Application
 
-API for Tenpo Lab program application
+User creation api
 
 ## Running the application
 
