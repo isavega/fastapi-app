@@ -1,38 +1,34 @@
 from fastapi import APIRouter, Body
 from fastapi.encoders import jsonable_encoder
-from server.model import NoteSchema
+from server.model import ApplicantSchema
 
 router = APIRouter()
 
-notes = {
+applicants = {
     "1": {
-        "title": "My first note",
-        "content": "This is the first note in my notes application"
+        "name": "Isabel Vega",
+        "linkedinProfile": "https://www.linkedin.com/in/isabelvegavillablanca/"
     },
-    "2": {
-        "title": "Uniform circular motion.",
-        "content": "Consider a body moving round a circle of radius r, wit uniform speed v as shown below. The speed everywhere is the same as v but direction changes as it moves round the circle."
-    }
 }
 
 
 @router.get("/")
-def get_notes() -> dict:
+def get_applicants() -> dict:
     return {
-        "data": notes
+        "data": applicants
     }
 
 @router.get("/{id}")
-async def get_note(id: str) -> dict:
-    if int(id) > len(notes):
+async def get_applicant(id: str) -> dict:
+    if int(id) > len(applicants):
         return {
-            "error": "Invalid note ID"
+            "error": "Invalid applicant ID"
         }
 
-    for note in notes.keys():
-        if note == id:
+    for applicant in applicants.keys():
+        if applicant == id:
             return {
-                "data": notes[note]
+                "data": applicants[applicant]
             }
 
     return {
@@ -40,43 +36,43 @@ async def get_note(id: str) -> dict:
     }
 
 @router.post("/")
-def add_note(note: NoteSchema = Body(...)) -> dict:
-    notes[str(len(notes)+1)] = note.dict()
+def add_applicant(applicant: ApplicantSchema = Body(...)) -> dict:
+    applicants[str(len(applicants)+1)] = applicant.dict()
 
     return {
-        "message": "Note added successfully"
+        "message": "Bienvenido a Tenpo Lab! Puedes subir tu CV en este link: https://forms.gle/6Q5Z7Z7Z7Z7Z7Z7Z7"
     }
-#
+
 @router.put("/{id}")
-def update_note(id: str, note: NoteSchema):
-    stored_note = notes[id]
-    if stored_note:
-        stored_note_model = NoteSchema(**stored_note)
-        update_data = note.dict(exclude_unset=True)
-        updated_note = stored_note_model.copy(update=update_data)
-        notes[id] = jsonable_encoder(updated_note)
+def update_applicant(id: str, applicant: ApplicantSchema):
+    stored_applicant = applicants[id]
+    if stored_applicant:
+        stored_applicant_model = ApplicantSchema(**stored_applicant)
+        update_data = applicant.dict(exclude_unset=True)
+        updated_applicant = stored_applicant_model.copy(update=update_data)
+        applicants[id] = jsonable_encoder(updated_applicant)
         return {
-            "message": "Note updated successfully"
+            "message": "applicant updated successfully"
         }
     return {
-        "error": "No such note exist"
+        "error": "No such applicant exist"
     }
 
 @router.delete("/{id}")
-def delete_note(id: str) -> dict:
-    if int(id) > len(notes):
+def delete_applicant(id: str) -> dict:
+    if int(id) > len(applicants):
         return {
-            "error": "Invalid note ID"
+            "error": "Invalid applicant ID"
         }
 
-    for note in notes.keys():
-        if note == id:
-            del notes[note]
+    for applicant in applicants.keys():
+        if applicant == id:
+            del applicants[applicant]
             return {
-                "message": "Note deleted"
+                "message": "applicant deleted"
             }
 
     return {
-        "error": "Note with {} doesn't exist".format(id)
+        "error": "applicant with {} doesn't exist".format(id)
     }
 
